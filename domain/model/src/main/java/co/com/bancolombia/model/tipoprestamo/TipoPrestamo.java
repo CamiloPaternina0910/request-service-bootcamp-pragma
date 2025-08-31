@@ -1,11 +1,12 @@
 package co.com.bancolombia.model.tipoprestamo;
+
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -18,11 +19,11 @@ public class TipoPrestamo {
 
     private String nombre;
 
-    private BigInteger montoMinimo;
+    private BigDecimal montoMinimo;
 
-    private BigInteger montoMaximo;
+    private BigDecimal montoMaximo;
 
-    private float tasaInteres;
+    private Float tasaInteres;
 
-    private boolean validacionAutomatica;
+    private Boolean validacionAutomatica;
 }

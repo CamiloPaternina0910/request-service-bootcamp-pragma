@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 spring:
   application:
     name: "RequestService"
@@ -22,3 +22,18 @@ management:
         enabled: true
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+
+adapters:
+  r2dbc:
+    host: "localhost"
+    port: 5432
+    database: "crediya_solicitudes"
+    schema: "public"
+    username: "postgres"
+    password: "12345678"
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui
