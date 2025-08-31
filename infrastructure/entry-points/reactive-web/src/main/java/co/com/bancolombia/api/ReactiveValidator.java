@@ -1,0 +1,29 @@
+package co.com.bancolombia.api;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Component
+@RequiredArgsConstructor
+public class ReactiveValidator {
+    private final Validator validator;
+
+    public <T> Mono<T> validate(T obj) {
+        Set<ConstraintViolation<T>> violations = validator.validate(obj);
+        if (violations.isEmpty()) {
+            return Mono.just(obj);
+        } else {
+            String errorMessage = violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(", "));
+            return Mono.error(new IllegalArgumentException(errorMessage));
+        }
+    }
+
+}

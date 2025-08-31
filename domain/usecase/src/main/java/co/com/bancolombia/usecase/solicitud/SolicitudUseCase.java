@@ -14,10 +14,11 @@ public class SolicitudUseCase {
     private final SolicitudValidator solicitudValidator;
 
     public Mono<Solicitud> save(Solicitud solicitud){
-        return null;
+        return solicitudValidator.validarCreacionSolicitud(solicitud)
+                .flatMap(solicitudRepository::save);
     }
 
     public Flux<Solicitud> findAll(){
-        return null;
+        return solicitudRepository.findAll();
     }
 }

@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 public interface EstadoRepository {
 
-    public Flux<Estado> findAll();
-
     public Mono<Estado> findById(String id);
+
+    public Mono<Estado> findByNombre(String nombre);
 }
