@@ -9,7 +9,9 @@ public interface SolicitudRepository {
 
     public Mono<Solicitud> save(Solicitud solicitud);
 
-    public Flux<Solicitud> findAll();
+    public Flux<Solicitud> findAll(Solicitud filtros, Integer numeroPagina, Integer tamanoPagina);
+
+    public Mono<Long> count(Solicitud filtros);
 
     public Mono<Solicitud> findById(String id);
 

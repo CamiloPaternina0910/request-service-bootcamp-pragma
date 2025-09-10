@@ -25,15 +25,22 @@ cors:
 
 adapters:
   r2dbc:
-    host: "localhost"
-    port: 5432
-    database: "crediya_solicitudes"
-    schema: "public"
-    username: "postgres"
-    password: "12345678"
+    host: ${DB_HOST:localhost}
+    port: ${DB_PORT:5432}
+    database: ${DB_NAME:crediya_solicitudes}
+    schema: ${DB_SCHEMA:public}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:12345678}
+
+microservices:
+  auth: ${AUTH_SERVICE_URL:http://localhost:8080/api/v1/usuarios}
 
 springdoc:
   api-docs:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui
+
+jwt:
+  secret: 9327c14da34fb6f1400f4f457a9108a88a227ae9e5865840756a6f211b31c3df8183dd2b914c92777f7ad24d59893f05a575bbe32d3e1ad626a726327b3b4d26
+  expiration: 86400000

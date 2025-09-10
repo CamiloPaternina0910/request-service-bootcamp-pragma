@@ -28,3 +28,5 @@ include ':usuario'
 project(':usuario').projectDir = file('./infrastructure/driven-adapters/usuario')
 include ':web-client'
 project(':web-client').projectDir = file('./infrastructure/driven-adapters/web-client')
+include ':jwt'
+project(':jwt').projectDir = file('./infrastructure/driven-adapters/jwt')

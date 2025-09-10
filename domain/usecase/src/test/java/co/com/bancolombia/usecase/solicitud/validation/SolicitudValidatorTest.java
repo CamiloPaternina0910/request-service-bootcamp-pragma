@@ -7,9 +7,9 @@ import co.com.bancolombia.model.tipoprestamo.TipoPrestamo;
 import co.com.bancolombia.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.com.bancolombia.model.usuario.Usuario;
 import co.com.bancolombia.model.usuario.gateways.UsuarioRepository;
-import co.com.bancolombia.usecase.solicitud.exception.EstadoNoEncontradoException;
-import co.com.bancolombia.usecase.solicitud.exception.TipoPrestamoNoEncontradoException;
-import co.com.bancolombia.usecase.solicitud.exception.UsuarioNoEncontradoException;
+import co.com.bancolombia.model.solicitud.exception.EstadoNoEncontradoException;
+import co.com.bancolombia.model.solicitud.exception.TipoPrestamoNoEncontradoException;
+import co.com.bancolombia.model.usuario.exception.UsuarioNoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,7 +64,7 @@ class SolicitudValidatorTest {
                 .idTipoPrestamo(tipoPrestamo.getId())
                 .correoElectronico("test@test.com")
                 .plazo(12)
-                .monto(new BigDecimal("1000000"))
+                .monto(new BigInteger("1000000"))
                 .build();
     }
 

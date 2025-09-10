@@ -1,13 +1,10 @@
 package co.com.bancolombia.model.solicitud;
-import co.com.bancolombia.model.estado.Estado;
-import co.com.bancolombia.model.tipoprestamo.TipoPrestamo;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Getter
@@ -19,7 +16,7 @@ public class Solicitud {
 
     private String id;
 
-    private BigDecimal monto;
+    private BigInteger monto;
 
     private Integer plazo;
 

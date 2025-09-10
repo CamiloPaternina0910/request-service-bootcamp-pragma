@@ -1,4 +1,4 @@
-package co.com.bancolombia.usecase.solicitud.exception;
+package co.com.bancolombia.model.exception;
 
 import lombok.Getter;
 

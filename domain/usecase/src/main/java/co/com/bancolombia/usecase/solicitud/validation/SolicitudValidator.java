@@ -7,9 +7,9 @@ import co.com.bancolombia.model.tipoprestamo.TipoPrestamo;
 import co.com.bancolombia.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.com.bancolombia.model.usuario.Usuario;
 import co.com.bancolombia.model.usuario.gateways.UsuarioRepository;
-import co.com.bancolombia.usecase.solicitud.exception.EstadoNoEncontradoException;
-import co.com.bancolombia.usecase.solicitud.exception.TipoPrestamoNoEncontradoException;
-import co.com.bancolombia.usecase.solicitud.exception.UsuarioNoEncontradoException;
+import co.com.bancolombia.model.solicitud.exception.EstadoNoEncontradoException;
+import co.com.bancolombia.model.solicitud.exception.TipoPrestamoNoEncontradoException;
+import co.com.bancolombia.model.usuario.exception.UsuarioNoEncontradoException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -20,17 +20,16 @@ public class SolicitudValidator {
     private final EstadoRepository estadoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    private final String ESTADO_INICIAL = "PENDIENTE";
+    private final String NOMBRE_ESTADO_INICIAL = "PENDIENTE";
 
     public Mono<Solicitud> validarCreacionSolicitud(Solicitud solicitud) {
-        Mono<Usuario> usuarioMono = usuarioRepository.findByDocumentoIdentificacion(solicitud.getDocumentoIdentificacion())
-                .switchIfEmpty(Mono.defer(() ->Mono.error(new UsuarioNoEncontradoException(solicitud.getDocumentoIdentificacion()))));
+        Mono<Usuario> usuarioMono = usuarioRepository.findByDocumentoIdentificacion(solicitud.getDocumentoIdentificacion());
 
         Mono<TipoPrestamo> tipoPrestamoMono = tipoPrestamoRepository.findById(solicitud.getIdTipoPrestamo())
                 .switchIfEmpty(Mono.defer(() ->Mono.error(new TipoPrestamoNoEncontradoException(solicitud.getIdTipoPrestamo()))));
 
-        Mono<Estado> estadoMono = estadoRepository.findByNombre(ESTADO_INICIAL)
-                .switchIfEmpty(Mono.defer(() ->Mono.error(new EstadoNoEncontradoException(ESTADO_INICIAL))));
+        Mono<Estado> estadoMono = estadoRepository.findByNombre(NOMBRE_ESTADO_INICIAL)
+                .switchIfEmpty(Mono.defer(() ->Mono.error(new EstadoNoEncontradoException(NOMBRE_ESTADO_INICIAL))));
 
         return Mono.zip(usuarioMono, tipoPrestamoMono, estadoMono)
                 .map(tuple -> {
@@ -42,7 +41,7 @@ public class SolicitudValidator {
                                     .correoElectronico(usuario.getCorreoElectronico())
                                     .plazo(solicitud.getPlazo())
                                     .monto(solicitud.getMonto())
-                                    .documentoIdentificacion(solicitud.getDocumentoIdentificacion())
+                                    .documentoIdentificacion(usuario.getDocumentoIdentificacion())
                                     .build();
                         }
                 );

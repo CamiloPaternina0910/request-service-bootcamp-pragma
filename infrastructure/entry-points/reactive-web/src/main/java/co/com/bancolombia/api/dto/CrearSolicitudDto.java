@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -23,10 +22,6 @@ public class CrearSolicitudDto {
     @Min(value = 0, message = "El plazo debe ser mayor a 0")
     @Schema(description = "Plazo del prestamo", example = "1")
     private Integer plazo;
-
-    @NotBlank(message = "El documento de identificación es obligatorio")
-    @Schema(description = "Documento de identificación del cliente", example = "10031232527")
-    private String documentoIdentificacion;
 
     @NotBlank(message = "El tipo de prestamo es obligatorio")
     @Schema(description = "Tipo de prestamo", example = "HIPOTECARIO")

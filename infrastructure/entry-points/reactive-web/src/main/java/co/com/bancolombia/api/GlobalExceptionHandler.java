@@ -1,6 +1,6 @@
 package co.com.bancolombia.api;
 
-import co.com.bancolombia.usecase.solicitud.exception.DominioException;
+import co.com.bancolombia.model.exception.DominioException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

@@ -6,8 +6,11 @@ import co.com.bancolombia.r2dbc.solicitud.entity.SolicitudEntity;
 import co.com.bancolombia.r2dbc.helper.ReactiveAdapterOperations;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -20,12 +23,16 @@ public class SolicitudReactiveRepositoryAdapter extends ReactiveAdapterOperation
         > implements SolicitudRepository {
 
     public SolicitudReactiveRepositoryAdapter(SolicitudReactiveRepository repository, ObjectMapper mapper) {
-        /**
-         *  Could be use mapper.mapBuilder if your domain model implement builder pattern
-         *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
-         *  Or using mapper.map with the class of the object model
-         */
         super(repository, mapper, d -> mapper.map(d, Solicitud.class));
+    }
+
+    public Flux<Solicitud> findAll(Solicitud solicitud, Integer numeroPagina, Integer tamanoPagina) {
+        Pageable pageable = PageRequest.of(numeroPagina, tamanoPagina);
+        return this.repository.findAll(solicitud.getMonto(), solicitud.getPlazo(), solicitud.getCorreoElectronico(), solicitud.getIdEstado(), solicitud.getIdTipoPrestamo(), pageable);
+    }
+
+    public Mono<Long> count(Solicitud solicitud) {
+        return this.repository.countByFiltros(solicitud.getMonto(), solicitud.getPlazo(), solicitud.getCorreoElectronico(), solicitud.getIdEstado(), solicitud.getIdTipoPrestamo());
     }
 
     @Override
