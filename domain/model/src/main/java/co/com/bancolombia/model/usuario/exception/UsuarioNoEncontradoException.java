@@ -1,6 +1,8 @@
-package co.com.bancolombia.usecase.solicitud.exception;
+package co.com.bancolombia.model.usuario.exception;
 
-public class UsuarioNoEncontradoException extends DominioException{
+import co.com.bancolombia.model.exception.DominioException;
+
+public class UsuarioNoEncontradoException extends DominioException {
 
     private static final int HTTP_STATUS_NOT_FOUND = 404;
 

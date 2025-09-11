@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.math.BigInteger;
+
 @Component
 @RequiredArgsConstructor
 public class Handler {
@@ -33,11 +35,39 @@ public class Handler {
     }
 
     public Mono<ServerResponse> listenFindAllRequest(ServerRequest serverRequest) {
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(
-                        solicitudUseCase.findAll().map(solicitudMapper::toResponse)
-                        , LecturaSolicitudDto.class
-                );
+        Solicitud filtros = getFiltrosFindAll(serverRequest);
+        Integer numeroPagina = serverRequest.queryParam("numeroPagina")
+                .map(Integer::parseInt)
+                .orElse(0);
+        Integer tamanoPagina = serverRequest.queryParam("tamanoPagina")
+                .map(Integer::parseInt)
+                .orElse(20);
+
+        return solicitudUseCase.count(filtros).flatMap(c -> {
+            return ServerResponse.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("X-Total-Count", String.valueOf(c))
+                    .header("X-Page-Number", String.valueOf(numeroPagina))
+                    .header("X-Page-Size", String.valueOf(tamanoPagina))
+                    .body(solicitudUseCase.findAll(filtros, numeroPagina, tamanoPagina)
+                            .map(solicitudMapper::toResponse), LecturaSolicitudDto.class);
+        });
+    }
+
+    private Solicitud getFiltrosFindAll(ServerRequest serverRequest) {
+        String montoStr = serverRequest.queryParam("monto").orElse(null);
+        String plazoStr = serverRequest.queryParam("plazo").orElse(null);
+        String correoElectronico = serverRequest.queryParam("correoElectronico").orElse(null);
+        String idEstado = serverRequest.queryParam("idEstado").orElse(null);
+        String idTipoPrestamo = serverRequest.queryParam("idTipoPrestamo").orElse(null);
+
+
+        return Solicitud.builder()
+                .monto(montoStr != null ? new BigInteger(montoStr) : null)
+                .plazo(plazoStr != null ? Integer.parseInt(plazoStr) : null)
+                .correoElectronico(correoElectronico)
+                .idEstado(idEstado)
+                .idTipoPrestamo(idTipoPrestamo)
+                .build();
     }
 }

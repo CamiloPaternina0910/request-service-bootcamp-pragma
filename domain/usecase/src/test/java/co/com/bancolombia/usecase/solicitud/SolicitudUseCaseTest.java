@@ -1,10 +1,11 @@
 package co.com.bancolombia.usecase.solicitud;
 
+import co.com.bancolombia.model.jwt.gateway.JwtService;
 import co.com.bancolombia.model.solicitud.Solicitud;
 import co.com.bancolombia.model.solicitud.gateways.SolicitudRepository;
-import co.com.bancolombia.usecase.solicitud.exception.EstadoNoEncontradoException;
-import co.com.bancolombia.usecase.solicitud.exception.TipoPrestamoNoEncontradoException;
-import co.com.bancolombia.usecase.solicitud.exception.UsuarioNoEncontradoException;
+import co.com.bancolombia.model.solicitud.exception.EstadoNoEncontradoException;
+import co.com.bancolombia.model.solicitud.exception.TipoPrestamoNoEncontradoException;
+import co.com.bancolombia.model.usuario.exception.UsuarioNoEncontradoException;
 import co.com.bancolombia.usecase.solicitud.validation.SolicitudValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID;
 
@@ -34,6 +34,9 @@ class SolicitudUseCaseTest {
     @Mock
     private SolicitudValidator solicitudValidator;
 
+    @Mock
+    private JwtService jwtService;
+
     @InjectMocks
     private SolicitudUseCase solicitudUseCase;
 
@@ -48,7 +51,7 @@ class SolicitudUseCaseTest {
                 .idTipoPrestamo("1")
                 .correoElectronico("test@test.com")
                 .plazo(12)
-                .monto(new BigDecimal("1000000"))
+                .monto(new BigInteger("1000000"))
                 .build();
 
         solicitudValidada = Solicitud.builder()
@@ -57,7 +60,7 @@ class SolicitudUseCaseTest {
                 .idEstado(UUID.randomUUID().toString())
                 .correoElectronico("test@test.com")
                 .plazo(12)
-                .monto(new BigDecimal("1000000"))
+                .monto(new BigInteger("1000000"))
                 .build();
 
 
@@ -68,8 +71,10 @@ class SolicitudUseCaseTest {
                 .idEstado(solicitudValidada.getIdEstado())
                 .correoElectronico("test@test.com")
                 .plazo(12)
-                .monto(new BigDecimal("1000000"))
+                .monto(new BigInteger("1000000"))
                 .build();
+
+        when(jwtService.getPrincipal()).thenReturn(Mono.just("123456789"));
     }
 
     @Test
@@ -146,7 +151,7 @@ class SolicitudUseCaseTest {
                 .idTipoPrestamo("2")
                 .correoElectronico("user@domain.com")
                 .plazo(24)
-                .monto(new BigDecimal("5000000"))
+                .monto(new BigInteger("5000000"))
                 .build();
 
         Solicitud solicitudValidadaCompleta = Solicitud.builder()
@@ -155,7 +160,7 @@ class SolicitudUseCaseTest {
                 .idEstado(UUID.randomUUID().toString())
                 .correoElectronico("user@domain.com")
                 .plazo(24)
-                .monto(new BigDecimal("5000000"))
+                .monto(new BigInteger("5000000"))
                 .build();
 
         Solicitud solicitudGuardadaCompleta = Solicitud.builder()
@@ -165,7 +170,7 @@ class SolicitudUseCaseTest {
                 .idEstado(solicitudValidadaCompleta.getIdEstado())
                 .correoElectronico("user@domain.com")
                 .plazo(24)
-                .monto(new BigDecimal("5000000"))
+                .monto(new BigInteger("5000000"))
                 .build();
 
         when(solicitudValidator.validarCreacionSolicitud(any(Solicitud.class)))
@@ -176,20 +181,20 @@ class SolicitudUseCaseTest {
 
         StepVerifier.create(solicitudUseCase.save(solicitudCompleta))
                 .expectNextMatches(saved ->
-                                saved.getDocumentoIdentificacion().equals("987654321") &&
+                        saved.getDocumentoIdentificacion().equals("987654321") &&
                                 saved.getIdTipoPrestamo().equals(solicitudValidadaCompleta.getIdTipoPrestamo()) &&
                                 saved.getIdEstado().equals(solicitudValidadaCompleta.getIdEstado()) &&
                                 saved.getCorreoElectronico().equals("user@domain.com") &&
                                 saved.getPlazo().equals(24) &&
-                                saved.getMonto().equals(new BigDecimal("5000000")))
+                                saved.getMonto().equals(new BigInteger("5000000")))
                 .verifyComplete();
     }
 
     @Test
     void findAllSolicitudes() {
-        when(solicitudRepository.findAll()).thenReturn(Flux.just(solicitudGuardada));
+        when(solicitudRepository.findAll(null, 0, 1)).thenReturn(Flux.just(solicitudGuardada));
 
-        StepVerifier.create(solicitudUseCase.findAll())
+        StepVerifier.create(solicitudUseCase.findAll(null, 0, 1))
                 .expectNext(solicitudGuardada)
                 .verifyComplete();
     }

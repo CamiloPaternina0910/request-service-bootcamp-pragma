@@ -1,4 +1,6 @@
-package co.com.bancolombia.usecase.solicitud.exception;
+package co.com.bancolombia.model.solicitud.exception;
+
+import co.com.bancolombia.model.exception.DominioException;
 
 public class TipoPrestamoNoEncontradoException extends DominioException {
 
